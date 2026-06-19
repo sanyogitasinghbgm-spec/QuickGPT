@@ -9,7 +9,7 @@
 ## ✨ Features
 
 - 🔐 **Secure Authentication** — JWT-based login & signup with bcrypt password hashing
-- 💬 **AI Text Chat** — Powered by Google Gemini (via OpenAI-compatible API)
+- 💬 **AI Text Chat** — Powered by Groq (via OpenAI-compatible API)
 - 🎨 **AI Image Generation** — On-the-fly image creation using ImageKit's AI transformation
 - 🖼️ **Community Gallery** — Users can publish their generated images for others to explore
 - 💳 **Credit-Based Subscription** — Razorpay-powered plans (Basic, Pro, Premium) to purchase credits
