@@ -18,17 +18,35 @@ export const textMessageController = async (req, res) => {
         const {chatId, prompt} = req.body
 
         const chat = await Chat.findOne({userId, _id: chatId})
+        if (!chat) {
+            return res.json({success: false, message: "Chat not found"})
+        }
+        
         chat.messages.push({role: "user", content: prompt, timestamp: Date.now(), isImage: false})
 
+        const systemMessage = {
+            role: "system",
+            content: "You are QuickGPT, a friendly, helpful, and highly intelligent AI assistant. You were built and developed by Sanyogita (Sanyogita Singh). If anyone asks who created, built, or developed you, you must tell them that you were created by Sanyogita. You are not developed by Meta, OpenAI, or anyone else."
+        };
+
+        // Filter out image messages from text generation context
+        const chatHistory = chat.messages
+            .filter(msg => !msg.isImage)
+            .map(msg => ({
+                role: msg.role,
+                content: msg.content
+            }));
+
+        // Limit to last 20 messages for context window size & performance
+        const contextHistory = chatHistory.slice(-20);
+
         const { choices } = await openai.chat.completions.create({
-        model: "llama-3.3-70b-versatile",
-        messages: [
-            {
-                role: "user",
-                content: prompt,
-            },
-        ],
-    });
+            model: "llama-3.3-70b-versatile",
+            messages: [
+                systemMessage,
+                ...contextHistory
+            ],
+        });
 
     const reply = {...choices[0].message, timestamp: Date.now(), isImage: false}
     res.json({success: true, reply})
